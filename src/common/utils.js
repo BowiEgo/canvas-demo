@@ -88,6 +88,7 @@ const utils = {
     var rad = Math.atan2(deltaY, deltaX);
     return rad;
   },
+  
   inpercentW: function(size) {
     return (size * W) / 100;
   },
@@ -96,6 +97,22 @@ const utils = {
     return (size * H) / 100;
   },
 
+  captureMouse: function(canvas) {
+    canvas.addEventListener('mousemove', (e) => {
+      this.x = e.offsetX
+      this.y = e.offsetY
+    })
+  },
+
+  /**
+   * intersect碰撞检测（目前只能检测子弹和砖块，很ugly，后期使用分离轴定理(SAT)进行判断，达到检测凸多边形的效果）
+   * @param {obj} [bullet] 子弹对象
+   * @param {obj} [brick] 砖块对象
+   * @return {boolean}
+  */
+  intersect: function(bullet, brick) {
+    return (bullet.x - bullet.radius <= brick.x + brick.width / 2) && ((bullet.y - bullet.radius) >= brick.y && bullet.y <= (brick.y + brick.height));
+  }
 }
 
 export default utils

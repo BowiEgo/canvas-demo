@@ -8,7 +8,7 @@ import Tween from '../common/easeEffects'
 console.log(Tween.Cubic)
 
 export default {
-    name: 'pie',
+    name: 'pieChart',
     data() {
         return {
             data: [
@@ -53,7 +53,7 @@ export default {
     computed: {
         myData: function () {
             return this.data[this.idx].value
-        },
+        }, 
         myRad: function () {
             return (Math.PI * 2)  * (this.data[this.idx].value / this.getTotal(this.data))
         },
@@ -69,11 +69,17 @@ export default {
         this.initChart()
         this.render()
         this.drawMaskFrame()
-        // this.drawMask(.8)
-        // for(var i = 1; i < this.data.length; i++) {
-        //     this.drawPie(i)
-        // }
-        // this.drawFrame()
+        // this.drawPie(0, 1)
+        // this.drawPie(1, 1)
+        
+        // this.ctx.save()
+        // this.drawPieTest()
+        // this.ctx.restore()
+        
+        // // // this.drawPie(2, 1)
+        // this.drawPie(3, 1)
+        // this.drawPie(4, 1)
+        // this.drawPie(5, 1)
     },
 
     methods: {
@@ -88,14 +94,13 @@ export default {
             this.getMidRadiusArr(this.pecentArr)
             this.canvas.addEventListener('mousemove', (e) => {
                 let idx = this.inRange(e)
-                // if(idx !== false) {}
                 this.render(idx)
                 this.showToolTip(e, idx)
             })
             let toolTipContainerStyle = {
                 position : 'absolute',
-                left : this.centerX + 'px',
-                top : this.centerY + 'px',
+                left : 0,
+                top : 0,
                 transition : 'all ease 0.2s',
                 display : 'inline-block',
                 padding : '4px 10px',
@@ -115,6 +120,18 @@ export default {
             }
             this.canvas.parentNode.append(this.toolTipContainer)
         },
+        drawPieTest () {
+            this.ctx.fillStyle = 'rgba(192, 41, 66, 0.7)'
+            this.ctx.beginPath()
+            this.ctx.moveTo(250, 250)
+            this.ctx.arc(250, 250, 130, 0.5235987755982987, 1.1219973762820687, false)
+            this.ctx.closePath()
+            this.ctx.shadowOffsetX = 0
+            this.ctx.shadowOffsetY = 0
+            this.ctx.shadowColor = "rgba( 0, 0, 0, 0.5)"
+            this.ctx.shadowBlur = 10
+            this.ctx.fill()
+        },
         drawPie (idx, scale) {
             let beginRad = - Math.PI / 2
             let myRad = (Math.PI * 2)  * (this.data[idx].value / this.getTotal(this.data))
@@ -129,7 +146,13 @@ export default {
             this.ctx.fillStyle = this.colors[idx]
             this.ctx.beginPath()
             this.ctx.moveTo(this.centerX, this.centerY)
-            this.ctx.arc(this.centerX, this.centerY, this.radius * scaleBase, beginRad, beginRad + myRad, false)
+            this.ctx.arc(this.centerX, this.centerY, this.radius * scaleBase, beginRad+ 0.001 , beginRad + myRad, false)
+
+            console.log(this.centerX)
+            console.log(this.centerY)
+            console.log(this.radius * scaleBase)
+            console.log(beginRad)
+            console.log(beginRad + myRad)
             this.ctx.closePath()
             if(scale > 1) {
                 this.ctx.shadowOffsetX = 0
@@ -138,7 +161,6 @@ export default {
                 this.ctx.shadowBlur = 10
             }
             this.ctx.fill()
-            
             this.ctx.restore()
         },
         drawMark (idx) {
@@ -201,12 +223,11 @@ export default {
             }
         },
         showToolTip (e, idx) {
-            let mouseX = e.clientX
-            let mouseY = e.clientY
+            console.log(e)
+            let mouseX = e.pageX
+            let mouseY = e.pageY
             if(idx !== false) {
-                // this.toolTipContainer.style.left = mouseX + 'px'
-                // this.toolTipContainer.style.top = mouseY + 'px'
-                this.toolTipContainer.style.transform = `translate3d(${mouseX - this.centerX}px, ${mouseY - this.centerY + 50}px, 0)`
+                this.toolTipContainer.style.transform = `translate3d(${mouseX + 20}px, ${mouseY + 20}px, 0)`
                 this.toolTipContainer.innerText = this.data[idx].name
                 this.toolTipContainer.style.opacity = '1'
                 this.toolTipContainer.style.display = 'inline-block'
